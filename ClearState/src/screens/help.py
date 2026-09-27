@@ -1,13 +1,18 @@
 import pygame
 from pathlib import Path
+from src.modules.label import Label
 from src.screens.base_state import BaseState
-from src.settings import WHITE, SCREEN_WIDTH, SCREEN_HEIGHT
+from src.settings import BLACK, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Help(BaseState):
     def __init__(self):
         super().__init__()
         self.background = pygame.image.load("ClearState/assets/White_Background_3.jpg").convert()
         self.font = pygame.font.SysFont(None, 36)
+        self.title1 = self.font.render("Instuctions to setup Clearstate:", True, BLACK)
+        self.title1_rect = self.title1.get_rect(center=(SCREEN_WIDTH // 2 - 75, 75))
+        self.title1 = self.font.render("Instuctions to setup Clearstate:", True, BLACK)
+        self.title1_rect = self.title1.get_rect(center=(SCREEN_WIDTH // 2 - 75, 75))
 
     def handle_events(self, events, clock):
         for event in events:
@@ -19,6 +24,7 @@ class Help(BaseState):
     def draw(self, screen):
         screen.fill((30, 30, 40))
         screen.blit(self.background, (0, 0))
-        message = self.font.render("HELP - Press ESC to return to menu", True, WHITE)
-        message_rect = message.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        message = self.font.render("HELP - Press ESC to return to menu", True, BLACK)
+        message_rect = message.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 200))
         screen.blit(message, message_rect)
+        screen.blit(self.title1, self.title1_rect)
