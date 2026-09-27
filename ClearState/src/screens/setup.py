@@ -19,7 +19,7 @@ class Setup(BaseState):
         super().__init__()
         self.font = pygame.font.SysFont(None, 36)
         self.items = create_programs(50)
-        image_path = Path(__file__).resolve().parents[2] / "assets" / "Black_Background_3.png"
+        image_path = Path(__file__).resolve().parents[2] / "assets" / "White_Background_3.png"
         self.background = pygame.image.load(str(image_path)).convert_alpha()
         self.background_rect = self.background.get_rect(topleft=(0, 0))
         self.lst_blockedprograms = ListView(self.items, SCREEN_WIDTH * 0.25, 100, 30)

@@ -14,7 +14,7 @@ from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, WHITE, BROWN, BLACK, ORANG
 class MainMenu(BaseState):
     def __init__(self):
         super().__init__()
-        self.background = pygame.image.load("ClearState\\assets\\Black_Background.png").convert_alpha()
+        self.background = pygame.image.load("ClearState\\assets\\White_Background.png").convert_alpha()
         self.background_rect = self.background.get_rect()
         self.background_rect.topleft = (0, 0)  # Set the top-left corner of the background image to (0, 0)
         self.btn_start_game = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 250, 300, 150, "Setup", 60, "setup")
