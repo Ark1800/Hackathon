@@ -17,11 +17,9 @@ from pathlib import Path
 HOST = "127.0.0.1"
 PORT = 5000
 PROJECT_DIR = Path(r"C:\Andrew C\\Hackathon\\Project NAME TBD")
-PROJECT_MAIN = PROJECT_DIR / "main.py"
+PRESAGE_SCRIPT = PROJECT_DIR / "presage2.py"
 LOCKED_APPS_FILE = PROJECT_DIR / "locked_apps.txt"
-
-global apps_blocking
-apps_blocking = [] #receiving all apps
+STATE_FILE = Path(r"C:\Andrew C\Hackathon\presage_main_run.txt")
 
 @staticmethod
 def read_textfile(file_path):
@@ -49,19 +47,22 @@ def minimize_by_keyword(keyword):
         window.minimize()
         print(f"Minimized window: {window.title}")
         
-def open_presage_process():
-    #Pause monitoring until the Presage Pygame process closes.
+def open_presage_process(application):
+    # Pause monitoring until the Presage dashboard closes.
     print("Opening Presage authentication...")
-    presage_process = subprocess.Popen(
-        [sys.executable, str(PROJECT_MAIN), "--presage"],
-        cwd=PROJECT_DIR,
-    )
-    presage_main_run = read_textfile("C:\\Andrew C\\Hackathon\\presage_main_run.txt")[0]  # Read the value from the text file
-    while presage_main_run == "True":
-        for i in range(len(apps_blocking)):
-            minimize_by_keyword(apps_blocking[i]["window"])  # Minimize the locked application window
-        presage_main_run = read_textfile("C:\\Andrew C\\Hackathon\\presage_main_run.txt")[0]  # Read the value from the text file
-    presage_process.wait()  # Wait for the Presage process to finish
+    write_andclear_textfile(STATE_FILE, "True")
+    minimize_by_keyword(application["window"])
+    try:
+        presage_process = subprocess.Popen(
+            [sys.executable, str(PRESAGE_SCRIPT), "--gui"],
+            cwd=PROJECT_DIR,
+        )
+        while presage_process.poll() is None:
+            minimize_by_keyword(application["window"])
+            time.sleep(1)
+        return presage_process.wait()
+    finally:
+        write_andclear_textfile(STATE_FILE, "False")
 
 def get_open_applications():
     applications = []
@@ -92,15 +93,19 @@ def get_open_applications():
     return applications
 
 def main():
+    authorized_window = None
 
     while True:
         applications = get_open_applications()
+        if authorized_window and not any(
+            application["window"] == authorized_window for application in applications
+        ):
+            authorized_window = None
         valid = False
         locked_application = None
-        apps_blocking = []
         locked_apps = read_textfile(LOCKED_APPS_FILE)  # Read the locked
         for application in applications:
-            (app_name, end) = application["name"].split(".exe")  # Split the application name at ".exe"
+            app_name = application["name"].removesuffix(".exe")
             app_window = application["window"]
            # print(f"Checking application: {app_name}, Window: {app_window}")  # Debugging output
             if app_name in locked_apps:
@@ -112,10 +117,9 @@ def main():
                     valid = True
                     locked_application = application
                     break  # Exit the loop if a locked application is found
-        if valid == True:
-            write_andclear_textfile("C:\\Andrew C\\Hackathon\\presage_main_run.txt", "True")  # Write "True" to the text file
-            minimize_by_keyword(locked_application["window"])  # Minimize the locked application window
-            apps_blocking.append(locked_application)  # Add the locked application to the blocking list
+        if valid and locked_application["window"] != authorized_window:
+            if open_presage_process(locked_application) == 0:
+                authorized_window = locked_application["window"]
         time.sleep(2)
 
 if __name__ == "__main__":

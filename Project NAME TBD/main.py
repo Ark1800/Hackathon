@@ -23,7 +23,7 @@ import sys
 
 if __name__ == "__main__":
     if "--presage" in sys.argv:
-        presage_script = Path(__file__).resolve().parent / "presage.py"
+        presage_script = Path(__file__).resolve().parent / "presage2.py"
         raise SystemExit(subprocess.run(
             [sys.executable, str(presage_script), "--gui"],
             cwd=presage_script.parent,

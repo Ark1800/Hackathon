@@ -14,18 +14,13 @@ from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, WHITE, BROWN, BLACK, ORANG
 class MainMenu(BaseState):
     def __init__(self):
         super().__init__()
-        self.btn_start_game = Push_Button(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 100, 200, 100, "Setup", 36, "setup")
-        self.btn_help = Push_Button(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 50, 200, 100, "Help", 36, "help")
-        self.btn_exit = Push_Button(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 200, 200, 100, "Exit", 36, "exit")
-        self.title = Label(SCREEN_WIDTH // 2, 100, 0, 100, "The Gambler's Nightmare", 100)
-        self.lbl_title = Label(0, 0, SCREEN_WIDTH, 80, "TITLE", 48)
-        self.txt_test1 = TextInput(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 300, 40, 24)  # Example TextInput
-        self.txt_test1.set_prompt("Enter your name...")
-        self.txt_test1.set_max_chars(50)
-        self.txt_test1.set_text_color(BLACK)
-        self.txt_test1.set_border_color(ORANGE)
-        self.txt_test1.set_background_color(WHITE)
-        self.txt_test1.set_cursor_color(BROWN)
+        image_path = Path(__file__).resolve().parents[2] / "assets" / "Black_Background.png"
+        self.background = pygame.image.load(str(image_path)).convert_alpha()
+        self.background_rect = self.background.get_rect(topleft=(0, 0))
+        self.btn_start_game = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 250, 300, 150, "Setup", 60, "setup")
+        self.btn_help = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 50, 300, 150, "Help", 60, "help")
+        self.btn_exit = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300, 150, "Exit", 60, "exit")
+        self.lbl_title = Label(0, 0, SCREEN_WIDTH, 80, "The Gambler's Nightmare", 50)
 
     def handle_events(self, events, clock):
         for event in events:
