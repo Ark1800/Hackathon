@@ -29,6 +29,7 @@ if __name__ == "__main__":
             cwd=presage_script.parent,
         ).returncode)
 
-    initial_state = "PRESAGE" if "--presage" in sys.argv else "MAIN_MENU"
+
+    initial_state = "HELP" if "--presage" in sys.argv else "MAIN_MENU"
     game = Game(initial_state)
     game.run()

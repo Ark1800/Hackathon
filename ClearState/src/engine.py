@@ -3,7 +3,6 @@ import sys
 import socket
 import threading
 import json
-from src.screens.presage import Presage
 from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BLACK
 from src.modules.push_button import Push_Button
 from src.screens import MainMenu, Setup, Help
@@ -27,7 +26,7 @@ class Game:
         self.state_dict = {
             "MAIN_MENU": MainMenu(),
             "SETUP": Setup(),
-            "PRESAGE": Presage()
+            "HELP": Help()
         }
         
         self.active_state_name = initial_state
@@ -104,8 +103,6 @@ class Game:
             self.state_dict["SETUP"] = Setup() # Clean slate reset
         if next_state_name == "MAIN_MENU":
             self.state_dict["MAIN_MENU"] = MainMenu() # Clean slate reset
-        if next_state_name == "PRESAGE":
-            self.state_dict["PRESAGE"] = Presage() # Clean slate reset
         if next_state_name == "HELP":
             self.state_dict["HELP"] = Help() # Clean slate reset
             

@@ -14,9 +14,9 @@ from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, WHITE, BROWN, BLACK, ORANG
 class MainMenu(BaseState):
     def __init__(self):
         super().__init__()
-        image_path = Path(__file__).resolve().parents[2] / "assets" / "Black_Background.png"
-        self.background = pygame.image.load(str(image_path)).convert_alpha()
-        self.background_rect = self.background.get_rect(topleft=(0, 0))
+        self.background = pygame.image.load("assets\\Black_Background.png").convert_alpha()
+        self.background_rect = self.background.get_rect()
+        self.background_rect.topleft = (0, 0)  # Set the top-left corner of the background image to (0, 0)
         self.btn_start_game = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 250, 300, 150, "Setup", 60, "setup")
         self.btn_help = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 50, 300, 150, "Help", 60, "help")
         self.btn_exit = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300, 150, "Exit", 60, "exit")
@@ -34,19 +34,16 @@ class MainMenu(BaseState):
                 self.write_andclear_textfile("C:\Andrew C\\Hackathon\\presage_main_run.txt", "False")  # Write "False" to the text file
                 pygame.quit()
 
-        self.txt_test1.handle_events(events)  # Pass events to the TextInput for handling user input
-        dt = clock.tick(60) / 1000.0  # Calculate delta time in seconds
-        self.txt_test1.update(dt)  # Update the TextInput to handle cursor blinking and other updates
+    
 
     def draw(self, screen):
         screen.fill((30, 30, 40)) 
-        self.txt_test1.draw(screen) 
-        self.title.draw(screen)
+        self.background.blit(screen, self.background_rect)
+        self.lbl_title.draw(screen)
         self.btn_start_game.draw(screen)
         self.btn_help.draw(screen)
         self.btn_exit.draw(screen)
         self.lbl_title.draw(screen)
-        self.txt_test1.draw(screen)  # Draw the TextInput on the screen
     
     @staticmethod
     def read_textfile(file_path):
