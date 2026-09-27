@@ -16,7 +16,7 @@ from pathlib import Path
 #host data
 HOST = "127.0.0.1"
 PORT = 5000
-PROJECT_DIR = Path(r"C:\Andrew C\\Hackathon\\Project NAME TBD")
+PROJECT_DIR = Path(r"C:\Andrew C\\Hackathon\\ClearState") 
 PRESAGE_SCRIPT = PROJECT_DIR / "presage2.py"
 LOCKED_APPS_FILE = PROJECT_DIR / "locked_apps.txt"
 STATE_FILE = Path(r"C:\Andrew C\Hackathon\presage_main_run.txt")
