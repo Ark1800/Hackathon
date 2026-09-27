@@ -6,7 +6,6 @@ from src.settings import WHITE, BLACK, GREEN, BROWN, RED, SCREEN_WIDTH, SCREEN_H
 from src.modules.label import Label
 from src.modules.push_button import Push_Button
 from src.modules.text_input import TextInput
-from src.modules.grid import Grid
 
 
 def create_programs(count):
@@ -31,7 +30,6 @@ class Setup(BaseState):
         self.txt_remove_program = TextInput(25, 450, 150, 100, 24)
         
         self.btn_return = Push_Button(850, 550, 150, 150, "Return", 24, "return")
-        self.grid = Grid(50, BROWN)
         
         self.txt_add_program.set_prompt("Program...")
         self.txt_add_program.set_max_chars(50)
@@ -82,7 +80,6 @@ class Setup(BaseState):
     def draw(self, screen):
         screen.fill((10, 50, 10))
         screen.blit(self.background, (0, 0))
-        self.grid.draw(screen)
         self.lst_blockedprograms.draw(screen)
         self.lbl_title.draw(screen)
         self.btn_return.draw(screen)

@@ -4,10 +4,8 @@ import subprocess
 from pathlib import Path
 from src.screens.base_state import BaseState
 from src.modules.push_button import Push_Button
-from src.modules.grid import Grid
 from src.modules.label import Label
 from src.modules.text_input import TextInput
-from src.modules.grid import Grid
 import psutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
@@ -18,7 +16,6 @@ class MainMenu(BaseState):
     def __init__(self):
         super().__init__()
         self.background = pygame.image.load("ClearState/assets/White_Background.jpg").convert()
-        self.grid = Grid(50, BROWN)
         self.btn_start_game = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 250, 300, 150, "Setup", 60, "setup")
         self.btn_help = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 50, 300, 150, "Help", 60, "help")
         self.btn_exit = Push_Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300, 150, "Exit", 60, "exit")
@@ -49,7 +46,6 @@ class MainMenu(BaseState):
         screen.fill((30, 30, 40)) 
         screen.blit(self.background, (0, 0))
         self.lbl_title.draw(screen)
-        self.grid.draw(screen)
         self.btn_start_game.draw(screen)
         self.btn_help.draw(screen)
         self.btn_exit.draw(screen)
