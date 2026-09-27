@@ -11,7 +11,7 @@ import subprocess
 import time
 from pathlib import Path
 
-#TO RUN SCRIPT: pythonw.exe "C:\Andrew C\Hackathon\Script Tests\app_monitor.py"
+#TO RUN SCRIPT: python.exe "C:\Andrew C\Hackathon\Script Tests\app_monitor.py"
 
 #host data
 HOST = "127.0.0.1"
@@ -19,6 +19,9 @@ PORT = 5000
 PROJECT_DIR = Path(r"C:\Andrew C\\Hackathon\\Project NAME TBD")
 PROJECT_MAIN = PROJECT_DIR / "main.py"
 LOCKED_APPS_FILE = PROJECT_DIR / "locked_apps.txt"
+
+global apps_blocking
+apps_blocking = [] #receiving all apps
 
 @staticmethod
 def read_textfile(file_path):
@@ -53,11 +56,12 @@ def open_presage_process():
         [sys.executable, str(PROJECT_MAIN), "--presage"],
         cwd=PROJECT_DIR,
     )
-    presage_main_run = read_textfile("C:\Andrew C\\Hackathon\\presage_main_run.txt")[0]  # Read the value from the text file
+    presage_main_run = read_textfile("C:\\Andrew C\\Hackathon\\presage_main_run.txt")[0]  # Read the value from the text file
     while presage_main_run == "True":
-        self.minimize_by_keyword("Presage")  # Minimize the Presage window
-        presage_main_run = read_textfile("C:\Andrew C\\Hackathon\\presage_main_run.txt")[0]  # Read the value from the text file
-    print("Presage authentication completed.")
+        for i in range(len(apps_blocking)):
+            minimize_by_keyword(apps_blocking[i]["window"])  # Minimize the locked application window
+        presage_main_run = read_textfile("C:\\Andrew C\\Hackathon\\presage_main_run.txt")[0]  # Read the value from the text file
+    presage_process.wait()  # Wait for the Presage process to finish
 
 def get_open_applications():
     applications = []
@@ -76,7 +80,6 @@ def get_open_applications():
             process = psutil.Process(pid)
 
             applications.append({
-                "pid": pid, #PROCESS ID i.e. 1234
                 "name": process.name(), #OPERATION NAME i.e. "chrome.exe"
                 "window": title #WINDOW TITLE i.e. "Hackathon - Google Docs"
             })
@@ -89,38 +92,31 @@ def get_open_applications():
     return applications
 
 def main():
-    allowed_pids = set()
 
     while True:
         applications = get_open_applications()
-        active_pids = {application["pid"] for application in applications}
-        allowed_pids.intersection_update(active_pids)
-        locked_apps = [entry.lower() for entry in read_textfile(LOCKED_APPS_FILE)]
+        valid = False
         locked_application = None
-
+        apps_blocking = []
+        locked_apps = read_textfile(LOCKED_APPS_FILE)  # Read the locked
         for application in applications:
-            if application["pid"] in allowed_pids:
-                continue
-            process_name = Path(application["name"]).stem.lower()
-            window_title = application["window"].lower()
-            if process_name in locked_apps or any(
-                locked_app in window_title for locked_app in locked_apps
-            ):
+            (app_name, end) = application["name"].split(".exe")  # Split the application name at ".exe"
+            app_window = application["window"]
+           # print(f"Checking application: {app_name}, Window: {app_window}")  # Debugging output
+            if app_name in locked_apps:
+                valid = True
                 locked_application = application
-                break
-
-        if locked_application:
-            print(
-                f"Locked application detected: {locked_application['name']} - "
-                f"{locked_application['window']}",
-                flush=True,
-            )
+                break  # Exit the loop if a locked application is found
+            for locked_app in locked_apps:
+                if locked_app.lower() in app_window.lower():
+                    valid = True
+                    locked_application = application
+                    break  # Exit the loop if a locked application is found
+        if valid == True:
             write_andclear_textfile("C:\\Andrew C\\Hackathon\\presage_main_run.txt", "True")  # Write "True" to the text file
             minimize_by_keyword(locked_application["window"])  # Minimize the locked application window
-            if open_presage_process():
-                allowed_pids.add(locked_application["pid"])
-
-        time.sleep(3)
+            apps_blocking.append(locked_application)  # Add the locked application to the blocking list
+        time.sleep(2)
 
 if __name__ == "__main__":
     main()
