@@ -1,9 +1,11 @@
 #installed processes
 import win32gui
 import win32process
+import win32con
 import psutil
 import socket
 import json 
+import pygetwindow as gw
 import sys
 import subprocess
 import time
@@ -18,8 +20,32 @@ PROJECT_DIR = Path(r"C:\Andrew C\\Hackathon\\Project NAME TBD")
 PROJECT_MAIN = PROJECT_DIR / "main.py"
 LOCKED_APPS_FILE = PROJECT_DIR / "locked_apps.txt"
 
+@staticmethod
+def read_textfile(file_path):
+    entries = []
+    with open(file_path, "r", encoding="utf-8") as file:
+        for line in file:
+            # .strip() removes the trailing newline character (\n)
+            entry = line.strip()
+            if entry:
+                entries.append(entry)
+    return entries
 
+@staticmethod 
+def write_andclear_textfile(file_path, entry):
+    with open(file_path, "w", encoding="utf-8") as file:
+        pass  # Clear the file by opening it in write mode without writing anything
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write(entry) #write the new entry to the file
 
+def minimize_by_keyword(keyword):
+    windows = gw.getWindowsWithTitle(keyword)
+    for window in windows:
+        if window.isMinimized:
+            continue  # Skip if the window is already minimized
+        window.minimize()
+        print(f"Minimized window: {window.title}")
+        
 def open_presage_process():
     #Pause monitoring until the Presage Pygame process closes.
     print("Opening Presage authentication...")
@@ -29,11 +55,9 @@ def open_presage_process():
     )
     presage_main_run = read_textfile("C:\Andrew C\\Hackathon\\presage_main_run.txt")[0]  # Read the value from the text file
     while presage_main_run == "True":
-        time.sleep(1)  # Wait for 1 second before checking again
+        self.minimize_by_keyword("Presage")  # Minimize the Presage window
         presage_main_run = read_textfile("C:\Andrew C\\Hackathon\\presage_main_run.txt")[0]  # Read the value from the text file
     print("Presage authentication completed.")
-
-
 
 def get_open_applications():
     applications = []
@@ -64,16 +88,6 @@ def get_open_applications():
 
     return applications
 
-def read_textfile(file_path):
-    entries = []
-    with open(file_path, "r", encoding="utf-8") as file:
-        for line in file:
-            # .strip() removes the trailing newline character (\n)
-            entry = line.strip()
-            if entry:
-                entries.append(entry)
-    return entries
-
 def main():
     allowed_pids = set()
 
@@ -101,6 +115,8 @@ def main():
                 f"{locked_application['window']}",
                 flush=True,
             )
+            write_andclear_textfile("C:\\Andrew C\\Hackathon\\presage_main_run.txt", "True")  # Write "True" to the text file
+            minimize_by_keyword(locked_application["window"])  # Minimize the locked application window
             if open_presage_process():
                 allowed_pids.add(locked_application["pid"])
 

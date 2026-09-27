@@ -36,7 +36,7 @@ class MainMenu(BaseState):
                 self.next_state = "HELP"
                 self.done = True
             elif self.btn_exit.click(event):
-                
+                self.write_andclear_textfile("C:\Andrew C\\Hackathon\\presage_main_run.txt", "False")  # Write "False" to the text file
                 pygame.quit()
 
         self.txt_test1.handle_events(events)  # Pass events to the TextInput for handling user input
@@ -52,3 +52,22 @@ class MainMenu(BaseState):
         self.btn_exit.draw(screen)
         self.lbl_title.draw(screen)
         self.txt_test1.draw(screen)  # Draw the TextInput on the screen
+    
+    @staticmethod
+    def read_textfile(file_path):
+        entries = []
+        with open(file_path, "r", encoding="utf-8") as file:
+            for line in file:
+                # .strip() removes the trailing newline character (\n)
+                entry = line.strip()
+                if entry:
+                    entries.append(entry)
+        return entries
+
+    @staticmethod 
+    def write_andclear_textfile(file_path, entry):
+        with open(file_path, "w", encoding="utf-8") as file:
+            pass  # Clear the file by opening it in write mode without writing anything
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(entry) #write the new entry to the file
+        
