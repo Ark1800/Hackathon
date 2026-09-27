@@ -90,7 +90,6 @@ class Setup(BaseState):
         self.btn_remove_program.draw(screen)
         self.txt_add_program.draw(screen)  # Draw the TextInput on the screen
         self.txt_remove_program.draw(screen)  # Draw the TextInput on the screen
-        #screen.blit(message, message_rect)
         
     @staticmethod
     def read_textfile(file_path):

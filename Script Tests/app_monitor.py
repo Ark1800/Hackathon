@@ -119,6 +119,7 @@ def main():
                     break  # Exit the loop if a locked application is found
         if valid and locked_application["window"] != authorized_window:
             if open_presage_process(locked_application) == 0:
+                print(f"Authorized access to {locked_application['window']}.")
                 authorized_window = locked_application["window"]
         time.sleep(2)
 

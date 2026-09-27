@@ -69,6 +69,10 @@ class Game:
         while self.running:
             self.clock.tick(FPS)
             self.handle_events(self.clock)
+
+            if not self.running:
+                break
+
             self.update()
             self.draw()
             if self.state.done:
